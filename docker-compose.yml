@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: sbb_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Avirishi#72
+      MYSQL_DATABASE: sbb_delays
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pAvirishi#72"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: sbb_api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_TYPE=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=Avirishi#72
+      - DB_NAME=sbb_delays
+      - SIMULATION_MODE=True
+      - START_DATE=2026-01-01
+      - END_DATE=2026-06-30
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
