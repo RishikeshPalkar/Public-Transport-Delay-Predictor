@@ -25,7 +25,15 @@ Public Transport Delay Predictor/
 │   README.md            # ← Project documentation (this file)
 │   run_pipeline.bat     # Windows automated pipeline launcher
 │
-├── src/
+├── backend-java/        # ← Java Spring Boot Orchestrator Backend
+│   ├── pom.xml          # Maven dependencies (Boot JPA, Web, MySQL Connector)
+│   └── src/main/java/com/sbb/predictor/
+│        ├── controller/ # Exposes REST endpoints (port 8080)
+│        ├── model/      # Station, Trip, and Weather POJO entities
+│        ├── repository/ # Spring Data JPA DB repositories
+│        └── service/    # Dashboard operations & Python ML RestTemplate calls
+│
+├── src/                 # ← Python ML Services & Data Ingestion
 │   ├── data_pipeline/
 │   │    ├─ ingest.py    # Pipeline orchestrator (DB setup, seeding, flow control)
 │   │    ├─ weather.py   # Historical weather retrieval via Open-Meteo API
@@ -38,6 +46,7 @@ Public Transport Delay Predictor/
 │   │    └─ train.py     # XGBoost Model training with early stopping & evaluation
 │   │
 │   └── api/
+│        ├─ static/      # Frontend files (index.html, style.css, app.js)
 │        ├─ schemas.py   # Pydantic request and response definitions
 │        ├─ predictor.py # Model scoring engine with database-driven lag fallbacks
 │        ├─ main.py      # FastAPI application hosting ML routes
@@ -203,7 +212,6 @@ Execute the automated `TestClient` suite:
 ```
 
 ---
-
 ## 🐳 Phase 4: Docker Containerization
 
 We containerized the entire solution using **Docker** and **Docker Compose** to run both MySQL and the FastAPI server seamlessly in isolated environments.
@@ -222,4 +230,31 @@ Ensure Docker Desktop is started and running on your system, then execute:
 docker compose up --build
 ```
 The server will be exposed on port `8000`. You can query the endpoints or open `http://localhost:8000/docs`.
+
+
+## ☕ Phase 5: Spring Boot Gateway Backend (`backend-java/`)
+
+To support a standard enterprise microservice architecture, we added a **Java Spring Boot Gateway** that acts as the primary orchestrator between the Frontend UI client and the Python ML prediction service.
+
+### Design Architecture
+1. **Frontend Dashboard** queries the Spring Boot REST API (`http://localhost:8080`).
+2. **Spring Boot** uses **Spring Data JPA** to fetch recent schedules, station metadata, and weather status from the MySQL database.
+3. **Spring Boot** invokes the **Python FastAPI Server** using `RestTemplate` to request XGBoost delay predictions.
+4. **Spring Boot** bundles the database records and prediction calculations, returning a single response.
+
+### Exposed REST API Endpoints
+- `GET /api/health` — Returns status of the Spring Boot gateway.
+- `GET /api/stations` — Returns all seeded stations metadata.
+- `GET /api/dashboard/data?station_uic=...` — Returns recent departures & arrivals with active XGBoost forecasts.
+
+### Running the Java Backend
+Navigate into the backend directory and launch the Spring Boot app:
+```powershell
+cd backend-java
+mvn spring-boot:run
+```
+The Java server will start running on port `8080`.
+
+---
+
 

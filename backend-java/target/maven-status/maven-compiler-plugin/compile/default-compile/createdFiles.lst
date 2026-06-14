@@ -1,0 +1,10 @@
+com\sbb\predictor\model\Station.class
+com\sbb\predictor\repository\WeatherRepository.class
+com\sbb\predictor\model\WeatherObservation.class
+com\sbb\predictor\PredictorApplication.class
+com\sbb\predictor\repository\StationRepository.class
+com\sbb\predictor\model\Trip.class
+com\sbb\predictor\service\MlClientService.class
+com\sbb\predictor\service\DashboardService.class
+com\sbb\predictor\controller\DashboardController.class
+com\sbb\predictor\repository\TripRepository.class

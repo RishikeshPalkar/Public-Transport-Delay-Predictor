@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBB Swiss Railway Delay Predictor</title>
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="logo-icon">🇨🇭</span>
+                <h1>SBB Swiss Railway Delay Predictor</h1>
+            </div>
+            <p class="subtitle">Real-time schedule forecasting fueled by XGBoost & meteorological features</p>
+        </header>
+
+        <!-- Control Bar -->
+        <section class="control-bar glass-panel">
+            <div class="control-group">
+                <label for="station-select">Select Station</label>
+                <div class="select-wrapper">
+                    <select id="station-select">
+                        <option value="" disabled selected>Loading stations...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>Auto Refresh</label>
+                <label class="switch">
+                    <input type="checkbox" id="refresh-toggle" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <button id="manual-refresh" class="btn btn-primary">
+                <span class="btn-icon">🔄</span> Refresh
+            </button>
+        </section>
+
+        <!-- Dashboard Grid -->
+        <main class="dashboard-grid">
+            
+            <!-- Left Side: Weather Status -->
+            <section class="weather-panel glass-panel">
+                <h2>Local Weather Status</h2>
+                <div id="weather-content" class="weather-content">
+                    <div class="loading-spinner">Loading weather data...</div>
+                </div>
+            </section>
+
+            <!-- Right Side: Schedule Board -->
+            <section class="board-panel glass-panel">
+                <div class="board-header">
+                    <h2>Schedule Board</h2>
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="departures">Departures</button>
+                        <button class="tab-btn" data-tab="arrivals">Arrivals</button>
+                    </div>
+                </div>
+
+                <!-- Departures Tab Content -->
+                <div id="departures-tab" class="tab-content active">
+                    <div class="table-container">
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Line</th>
+                                    <th>Destination</th>
+                                    <th>XGBoost Forecast</th>
+                                </tr>
+                            </thead>
+                            <tbody id="departures-body">
+                                <tr>
+                                    <td colspan="4" class="empty-message">Select a station to load departures</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Arrivals Tab Content -->
+                <div id="arrivals-tab" class="tab-content">
+                    <div class="table-container">
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Line</th>
+                                    <th>Origin</th>
+                                    <th>XGBoost Forecast</th>
+                                </tr>
+                            </thead>
+                            <tbody id="arrivals-body">
+                                <tr>
+                                    <td colspan="4" class="empty-message">Select a station to load arrivals</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-status">
+                <span id="health-indicator" class="indicator unhealthy"></span>
+                <span id="health-text">API connecting...</span>
+            </div>
+            <p>Phase 5 - Solo Developer Portfolio Project (EPFL/Swiss Universities alignment)</p>
+        </footer>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>

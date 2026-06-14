@@ -1,5 +1,5 @@
 // App Configuration
-const API_BASE = "http://localhost:8080";
+const API_BASE = ""; // Empty string triggers relative requests to the same host/port
 
 // App State
 let activeStationUic = "";
@@ -79,7 +79,7 @@ async function loadStations() {
         stationSelect.innerHTML = '<option value="" disabled selected>Choose a Swiss Hub...</option>';
         stations.forEach(station => {
             const option = document.createElement("option");
-            option.value = station.uic_code;
+            option.value = station.uicCode; // Match Java POJO field name camelCase: uicCode instead of uic_code
             option.textContent = `${station.name} (${station.canton})`;
             stationSelect.appendChild(option);
         });
@@ -157,6 +157,7 @@ function getDelayBadge(delayMin) {
 // Helper to Format Time
 function formatTime(isoString) {
     if (!isoString) return "--:--";
+    // Spring Boot returns standard LocalDateTime string like "2026-06-14T08:30" or ISO format
     const date = new Date(isoString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
@@ -201,14 +202,6 @@ function startAutoRefresh() {
             console.log("[Auto-Refresh] Triggered reload");
             fetchDashboardData(activeStationUic);
         }, 30000);
-    }
-}
-
-function stopAutoRefresh() {
-    if (refreshIntervalId) {
-        clearInterval(refreshIntervalId);
-        refreshIntervalId = null;
-        console.log("[Auto-Refresh] Stopped");
     }
 }
 
@@ -261,6 +254,14 @@ async function init() {
                 startAutoRefresh();
             }
         }, 500);
+    }
+}
+
+function stopAutoRefresh() {
+    if (refreshIntervalId) {
+        clearInterval(refreshIntervalId);
+        refreshIntervalId = null;
+        console.log("[Auto-Refresh] Stopped");
     }
 }
 
