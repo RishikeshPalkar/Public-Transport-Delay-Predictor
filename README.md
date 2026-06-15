@@ -253,7 +253,7 @@ Navigate into the backend directory and launch the Spring Boot app:
 cd backend-java
 mvn spring-boot:run
 ```
-The Java server will start running on port `8080`.
+The Java server will start running on port `8081`.
 
 ---
 
